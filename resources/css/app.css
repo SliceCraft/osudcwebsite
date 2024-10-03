@@ -77,3 +77,9 @@ body {
 .min-100-height{
     min-height: 100vh;
 }
+
+.transparent-list-group .list-group-item {
+    background-color: transparent;
+    border-color: white;
+    color: white;
+}
