@@ -18,7 +18,10 @@ class PlayerController extends Controller
         }
 
         // This is not the best search logic but should work for most cases
-        $player = Player::query()->where('user_id', '=', $username)->orWhereLike('username', "%$username%")->first();
+        // It's doing 3 queries here to prioritize one type of search over the other
+        $player = Player::query()->where('user_id', '=', $username)->first();
+        $player = $player ?? Player::query()->whereRaw('LOWER(username) = LOWER(?)', [ $username ])->first();
+        $player = $player ?? Player::query()->whereLike('username', "%$username%")->first();
         if($player == null){
             return view('playersearch', [
                 "error" => "Unable to find this player"

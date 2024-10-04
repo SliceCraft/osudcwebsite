@@ -26,11 +26,13 @@ class RecalculatePlayerData implements ShouldQueue
     {
         $scores = Score::query()->where('user_id', '=', $this->player_id)->get();
         $player = Player::query()->where('user_id', '=', $this->player_id)->first();
-        $player->completed_daily_challenges = count($scores);
+        $daily_challenges = Score::max('daily_challenge') + 1;
 
+        $player->completed_daily_challenges = count($scores);
         $player->total_score = 0;
         $player->total_attempts = 0;
         $player->current_streak = 0;
+
         $totalacc = 0.0;
         $totalplacement = 0;
         $last_daily_challenge = -2;
@@ -42,8 +44,11 @@ class RecalculatePlayerData implements ShouldQueue
             $player->total_score += $score->score;
             $totalplacement += $score->placement;
         }
-        $player->average_accuracy = $totalacc / count($scores);
+
+        $player->average_accuracy = $totalacc / $daily_challenges;
+        // TODO: The totalplacement should use the bottom placement when a player didn't play in a particular daily challenge
         $player->average_placement = $totalplacement / count($scores);
+//        $player->average_placement = $totalplacement / $daily_challenges;
         if($last_daily_challenge != Score::max('daily_challenge')){
             $player->current_streak = 0;
         }

@@ -83,3 +83,11 @@ body {
     border-color: white;
     color: white;
 }
+
+.white-text {
+    color: white;
+}
+
+.white-text:hover {
+    color: white;
+}

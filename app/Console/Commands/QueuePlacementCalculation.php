@@ -29,6 +29,7 @@ class QueuePlacementCalculation extends Command
      */
     public function handle()
     {
+        // Instead of fetching Score::all the query only fetches 10k at a time to prevent memory errors
         $score_count = Score::max('id');
         for($i = 0; $i < $score_count; $i += 10000){
             $scores = Score::query()->where('id', '>=', $i)->where('id', '<', $i + 10000)->where('placement', '=', 0)->get();

@@ -19,8 +19,6 @@ class HomeController extends Controller
         $data["total_maxed_dc"] = Player::query()->where('current_streak', '=', Score::max('daily_challenge') + 1)->count();
         $data["total_attempts"] = Player::all()->sum('total_attempts');
         $data["total_score"] = Player::all()->sum('total_score');
-        $data["players_running_in_job"] = DB::table('jobs')->whereLike('payload', '%RecalculatePlayerData%')->count();
-        $data["placements_running_in_job"] = DB::table('jobs')->whereLike('payload', '%CalculatePlacement%')->count();
         return view('welcome', $data);
     }
 }

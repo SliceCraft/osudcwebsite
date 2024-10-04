@@ -12,13 +12,30 @@
     </head>
 
     <body class="text-center text-white bg-dark min-100-height">
-        <div class="cover-container d-flex p-3 mx-auto flex-column">
-            <header class="mb-auto">
-                <div>
-                    <h3 class="float-md-start mb-0">osu!dailychallenge stats</h3>
-                </div>
-            </header>
-        </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+            <a class="navbar-brand" href="{{route('home')}}" style="color: white">osu!daily challenge stats</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route("userinfo")}}" style="color: white">User lookup</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white">
+                            Leaderboards
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="{{route('leaderboard', ['leaderboard' => 'score'])}}">Total score</a>
+                            <a class="dropdown-item" href="{{route('leaderboard', ['leaderboard' => 'attempts'])}}">Total attempts</a>
+                            <a class="dropdown-item" href="{{route('leaderboard', ['leaderboard' => 'placement'])}}">Average placement</a>
+                            <a class="dropdown-item" href="{{route('leaderboard', ['leaderboard' => 'accuracy'])}}">Average accuracy</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
         <main class="px-3 main-margin seventy-percent center">
             {{ $slot }}
@@ -27,10 +44,5 @@
             <!-- To the people that find this, you don't want to know how many things we tried to get the bottom to work
              Nothing seemed to work except this, so deal with it -->
         </footer>
-        {{--        <script>--}}
-        {{--            setTimeout(() => {--}}
-        {{--                window.location.href = './'--}}
-        {{--            }, 1e3)--}}
-        {{--        </script>--}}
     </body>
 </html>

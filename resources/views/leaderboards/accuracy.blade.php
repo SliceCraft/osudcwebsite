@@ -1,10 +1,11 @@
 <x-mainlayout>
+    <h1>Average accuracy Leaderboard</h1>
     <table class="table text-white table-bordered shadow p-3 mb-5 rounded">
         <thead>
         <tr>
             <th scope="col">#</th>
             <th scope="col">Username</th>
-            <th scope="col">Total score</th>
+            <th scope="col">Average accuracy</th>
         </tr>
         </thead>
         <tbody>
@@ -12,7 +13,7 @@
             <tr>
                 <th scope="row">{{$entry->placement}}</th>
                 <td><a href="{{route('userinfo', ['username' => $entry->user_id])}}" style="color: white;">{{$entry->username}}</a></td>
-                <td>{{number_format($entry->total_score)}}</td>
+                <td>{{$entry->average_accuracy}}</td>
             </tr>
         @endforeach
         </tbody>
