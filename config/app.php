@@ -122,5 +122,8 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
-
+    'osu_api' => [
+        'client_id' => env('OSU_API_CLIENT_ID', ''),
+        'client_secret' => env('OSU_API_CLIENT_SECRET', ''),
+    ]
 ];
