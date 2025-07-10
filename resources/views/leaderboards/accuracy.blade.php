@@ -1,5 +1,6 @@
 <x-mainlayout>
     <h1>Average accuracy Leaderboard</h1>
+    <p>Your average accuracy will be lower if you missed a daily challenge</p>
     <table class="table text-white table-bordered shadow p-3 mb-5 rounded">
         <thead>
         <tr>
@@ -13,7 +14,7 @@
             <tr>
                 <th scope="row">{{$entry->placement}}</th>
                 <td><a href="{{route('userinfo', ['username' => $entry->user_id])}}" style="color: white;">{{$entry->username}}</a></td>
-                <td>{{$entry->average_accuracy}}</td>
+                <td>{{round($entry->average_accuracy, 3)}}</td>
             </tr>
         @endforeach
         </tbody>

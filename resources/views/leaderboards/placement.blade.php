@@ -14,7 +14,7 @@
             <tr>
                 <th scope="row">{{$entry->placement}}</th>
                 <td><a href="{{route('userinfo', ['username' => $entry->user_id])}}" style="color: white;">{{$entry->username}}</a></td>
-                <td>{{$entry->average_placement}}</td>
+                <td>{{round($entry->average_placement, 2)}}</td>
             </tr>
         @endforeach
         </tbody>

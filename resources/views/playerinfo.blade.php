@@ -4,7 +4,7 @@
     </a>
     <ul class="list-group mb-5 transparent-list-group">
         <li class="list-group-item" data-bs-theme="dark">Completed daily challenges: {{number_format($player->completed_daily_challenges)}}</li>
-        <li class="list-group-item">Average accuracy: {{$player->average_accuracy}}</li>
+        <li class="list-group-item">Average accuracy: {{$player->average_accuracy}}<br>Your average accuracy will be lower if you missed a daily challenge</li>
         <li class="list-group-item">Total attempts: {{number_format($player->total_attempts)}}</li>
         <li class="list-group-item">Current streak: {{number_format($player->current_streak)}}</li>
         <li class="list-group-item">Total score: {{number_format($player->total_score)}}</li>
@@ -23,7 +23,7 @@
         <tbody>
         @foreach($dailychallenges as $entry)
             <tr>
-                <th scope="row">{{$entry->daily_challenge + 1}}</th>
+                <th scope="row">{{$entry->daily_challenge}}</th>
                 <th scope="row">{{$entry->score}}</th>
                 <th scope="row">{{$entry->accuracy}}</th>
                 <th scope="row">{{$entry->attempts}}</th>
