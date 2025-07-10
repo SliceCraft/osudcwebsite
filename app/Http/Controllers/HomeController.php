@@ -16,7 +16,7 @@ class HomeController extends Controller
         $data = [];
         $data["player_count"] = Player::count();
         $data["total_lb_entries"] = Score::count();
-        $data["total_maxed_dc"] = Player::query()->where('current_streak', '=', Score::max('daily_challenge') + 1)->count();
+        $data["total_maxed_dc"] = Player::query()->where('current_streak', '=', Score::max('daily_challenge'))->count();
         $data["total_attempts"] = Player::all()->sum('total_attempts');
         $data["total_score"] = Player::all()->sum('total_score');
         return view('welcome', $data);

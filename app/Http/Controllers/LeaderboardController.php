@@ -19,7 +19,7 @@ class LeaderboardController extends Controller
                 $data["leaderboard"] = Player::orderBy('average_accuracy', 'DESC')->paginate(50);
                 break;
             case 'placement':
-                $data["leaderboard"] = Player::orderBy('average_placement', 'ASC')->where('current_streak', '=', Score::max('daily_challenge') + 1)->paginate(50);
+                $data["leaderboard"] = Player::orderBy('average_placement', 'ASC')->where('current_streak', '=', Score::max('daily_challenge'))->paginate(50);
                 break;
             case 'attempts':
                 $data["leaderboard"] = Player::orderBy('total_attempts', 'DESC')->paginate(50);
