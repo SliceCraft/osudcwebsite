@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('players', function (Blueprint $table) {
-            $table->integer('total_score')->nullable(false);
-            $table->float('average_placement')->nullable(false);
+            $table->integer('total_score')->nullable(false)->default(0);
+            $table->float('average_placement')->nullable(false)->default(0);
         });
     }
 
