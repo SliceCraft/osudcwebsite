@@ -28,13 +28,8 @@ class QueuePlayerRecalc extends Command
      */
     public function handle()
     {
-        // Instead of fetching Player::all the query only fetches 10k at a time to prevent memory errors
-        $player_count = Player::max('id');
-        for($i = 0; $i < $player_count; $i += 10000){
-            $players = Player::query()->where('id', '>=', $i)->where('id', '<', $i + 10000)->get();
-            foreach ($players as $player){
-                RecalculatePlayerData::dispatch($player->user_id);
-            }
-        }
+        Player::query()->chunk(100, function ($players) {
+            RecalculatePlayerData::dispatch($players->pluck('user_id')->toArray());
+        });
     }
 }

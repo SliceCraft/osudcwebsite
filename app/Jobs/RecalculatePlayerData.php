@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\DailyChallenge;
 use App\Models\Player;
 use App\Models\Score;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,7 +15,7 @@ class RecalculatePlayerData implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public int $player_id)
+    public function __construct(public array $playerIds)
     {
         //
     }
@@ -24,35 +25,43 @@ class RecalculatePlayerData implements ShouldQueue
      */
     public function handle(): void
     {
-        $scores = Score::query()->where('user_id', '=', $this->player_id)->get();
-        $player = Player::query()->where('user_id', '=', $this->player_id)->first();
-        $daily_challenges = Score::max('daily_challenge') + 1;
+        $players = Player::query()->whereIn('user_id', $this->playerIds)->get();
+        $scores = Score::query()->whereIn('user_id', $this->playerIds)->get();
+        $dailyChallenges = Score::max('daily_challenge');
 
-        $player->completed_daily_challenges = count($scores);
-        $player->total_score = 0;
-        $player->total_attempts = 0;
-        $player->current_streak = 0;
+        foreach($players as $player) {
+            $playerScores = $scores->where('user_id', $player->user_id)->sortBy('daily_challenge');
 
-        $totalacc = 0.0;
-        $totalplacement = 0;
-        $last_daily_challenge = -2;
-        foreach($scores as $score){
-            $totalacc += $score->accuracy;
-            $player->total_attempts += $score->attempts;
-            $player->current_streak = $score->daily_challenge == $last_daily_challenge + 1 ? $player->current_streak + 1 : 1;
-            $last_daily_challenge = $score->daily_challenge;
-            $player->total_score += $score->score;
-            $totalplacement += $score->placement;
+            $player->completed_daily_challenges = count($playerScores);
+
+            $totalScore = 0;
+            $totalAttempts = 0;
+            $currentStreak = 0;
+            $totalAcc = 0.0;
+            $totalPlacement = 0;
+            $lastDailyChallenge = -2;
+
+            foreach($playerScores as $score){
+                $totalAcc += $score->accuracy;
+                $totalAttempts += $score->attempts;
+                $currentStreak = ($score->daily_challenge - 1) == $lastDailyChallenge ? $currentStreak + 1 : 1;
+                $lastDailyChallenge = $score->daily_challenge;
+                $totalScore += $score->score;
+                $totalPlacement += $score->placement;
+            }
+
+            if($lastDailyChallenge != $dailyChallenges){
+                $currentStreak = 0;
+            }
+
+            $player->total_score = $totalScore;
+            $player->total_attempts = $totalAttempts;
+            $player->current_streak = $currentStreak;
+            $player->average_accuracy = $totalAcc / $dailyChallenges;
+            // TODO: The totalplacement should use the bottom placement when a player didn't play in a particular daily challenge
+            $player->average_placement = $totalPlacement / count($playerScores);
+
+            $player->save();
         }
-
-        $player->average_accuracy = $totalacc / $daily_challenges;
-        // TODO: The totalplacement should use the bottom placement when a player didn't play in a particular daily challenge
-        $player->average_placement = $totalplacement / count($scores);
-//        $player->average_placement = $totalplacement / $daily_challenges;
-        if($last_daily_challenge != Score::max('daily_challenge')){
-            $player->current_streak = 0;
-        }
-
-        $player->save();
     }
 }
