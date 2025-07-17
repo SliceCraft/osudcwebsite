@@ -67,7 +67,7 @@ class OsuAPIClient
     public function getRoomLeaderboard(int $roomId, int $page = 1)
     {
         $this->ensureCredentials();
-        $this->ensureCooldown(100);
+        $this->ensureCooldown();
 
         $response = Http::accept('application/json')
             ->contentType('application/json')
