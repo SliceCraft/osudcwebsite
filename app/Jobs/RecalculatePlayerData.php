@@ -64,4 +64,6 @@ class RecalculatePlayerData implements ShouldQueue
             $player->save();
         }
     }
+
+    public $timeout = 10000;
 }
