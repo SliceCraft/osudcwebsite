@@ -35,9 +35,10 @@ class GetDailyChallengeLeaderboardData extends Command
     {
         $collectedRooms = Score::select(DB::raw("DISTINCT daily_challenge AS daily_challenge"))->get()->pluck('daily_challenge')->toArray();
         $dailyChallenges = DailyChallenge::query()->whereNotIn('id', $collectedRooms)->orderBy('id')->get();
+        $highestDailyChallenge = DailyChallenge::query()->max('id');
 
         foreach ($dailyChallenges as $dailyChallenge) {
-            $this->info("Getting information about room $dailyChallenge->room_id");
+            $this->info("[$dailyChallenge->id/$highestDailyChallenge] Getting information about room $dailyChallenge->room_id");
             $leaderboardData = $osuAPIClient->getRoom($dailyChallenge->room_id);
 
             if($leaderboardData['active'] == true) {
@@ -48,7 +49,7 @@ class GetDailyChallengeLeaderboardData extends Command
             $pages = ceil($leaderboardData['participant_count'] / $this->amountPerPage);
 
             for ($page = 1; $page <= $pages; $page++) {
-                $this->info("[$page/$pages] Getting leaderboard data for room $dailyChallenge->room_id");
+                $this->info("[$dailyChallenge->id/$highestDailyChallenge | $page/$pages] Getting leaderboard data for room $dailyChallenge->room_id");
 
                 $leaderboardData = $osuAPIClient->getRoomLeaderboard($dailyChallenge->room_id, $page);
                 $this->importScores($leaderboardData, $dailyChallenge, $page);
