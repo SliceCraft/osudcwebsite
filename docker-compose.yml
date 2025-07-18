@@ -1,0 +1,19 @@
+services:
+    app:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        container_name: osudc-php
+        restart: unless-stopped
+        volumes:
+            - /var/www
+    nginx:
+        image: nginx:alpine
+        container_name: osudc-nginx
+        restart: unless-stopped
+        ports:
+            - "8000:80"
+        volumes:
+            - ./docker/nginx:/etc/nginx/conf.d/
+        volumes_from:
+            - app
