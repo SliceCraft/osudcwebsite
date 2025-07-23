@@ -7,12 +7,21 @@ services:
         restart: unless-stopped
         volumes:
             - /var/www
+    queue-worker:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        deploy:
+            mode: replicated
+            replicas: 3
+        entrypoint: php artisan queue:work
+        restart: unless-stopped
     nginx:
         image: nginx:alpine
         container_name: osudc-nginx
         restart: unless-stopped
         ports:
-            - "8000:80"
+            - "9000:80"
         volumes:
             - ./docker/nginx:/etc/nginx/conf.d/
         volumes_from:
