@@ -6,6 +6,7 @@ use App\Libraries\OsuAPI\OsuAPIClient;
 use App\Models\DailyChallenge;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 
 class GetDailyChallengeRoomData extends Command
 {
@@ -61,8 +62,8 @@ class GetDailyChallengeRoomData extends Command
             $dailyChallengeRow = new DailyChallenge();
             $dailyChallengeRow->id = DailyChallenge::count() + 1;
             $dailyChallengeRow->room_id = $dailyChallengeRoomRoom['id'];
-            $dailyChallengeRow->starts_at = $dailyChallengeRoomRoom['starts_at'];
-            $dailyChallengeRow->ends_at = $dailyChallengeRoomRoom['ends_at'];
+            $dailyChallengeRow->starts_at = Carbon::parse($dailyChallengeRoomRoom['starts_at']);
+            $dailyChallengeRow->ends_at = Carbon::parse($dailyChallengeRoomRoom['ends_at']);
             $dailyChallengeRow->save();
         }
 
