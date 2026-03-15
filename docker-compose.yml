@@ -2,12 +2,14 @@ services:
     app:
         build:
             context: ./
-            dockerfile: Dockerfile
-        container_name: osudc-php
+            dockerfile: Deployment.Dockerfile
         restart: unless-stopped
+        working_dir: /var/www/
+        env_file:
+            - .env
         volumes:
             - /var/www
-    queue-worker:
+    queue-worker-default:
         build:
             context: ./
             dockerfile: Dockerfile
@@ -21,7 +23,7 @@ services:
         container_name: osudc-nginx
         restart: unless-stopped
         ports:
-            - "9000:80"
+            - "${NGINX_PORT_EXPOSE}:80"
         volumes:
             - ./docker/nginx:/etc/nginx/conf.d/
         volumes_from:
