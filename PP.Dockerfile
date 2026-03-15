@@ -1,3 +1,11 @@
+# Build osu-tools
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-osu-tools
+WORKDIR /src
+RUN git clone --depth 1 https://github.com/ppy/osu-tools.git .
+WORKDIR /src/PerformanceCalculator
+RUN dotnet publish -c Release -r linux-x64 --self-contained false -o /app/publish
+
+# Build the main app
 FROM php:8.4-fpm
 
 RUN apt update && apt install -y \
@@ -7,6 +15,7 @@ RUN apt update && apt install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
+    libicu-dev \
     unzip \
     zip \
     && apt clean && rm -rf /var/lib/apt/lists/*
@@ -17,9 +26,13 @@ RUN pecl install redis && docker-php-ext-enable redis
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apt install -y nodejs \
-    && npm install -g npm
+RUN curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh \
+    && chmod +x dotnet-install.sh \
+    && ./dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/local/bin \
+    && rm dotnet-install.sh
+
+WORKDIR /opt/osu-tools
+COPY --from=build-osu-tools /app/publish .
 
 COPY . /var/www
 WORKDIR /var/www
@@ -31,5 +44,5 @@ COPY --from=composer:2.6.5 /usr/bin/composer /usr/local/bin/composer
 
 COPY composer.json ./
 RUN composer install
-RUN npm install
-RUN npm run build
+
+CMD ["php", "artisan", "queue:work", "-v", "--queue=pp"]

@@ -17,12 +17,32 @@ services:
     queue-worker-default:
         build:
             context: ./
-            dockerfile: Dockerfile
+            dockerfile: Deployment.Dockerfile # Figure out a better way to do this
         deploy:
             mode: replicated
-            replicas: 3
-        entrypoint: php artisan queue:work
+            replicas: 1
+        entrypoint: php artisan queue:work -v
         restart: unless-stopped
+        depends_on:
+            db:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+    queue-worker-pp:
+        build:
+            context: ./
+            dockerfile: PP.Dockerfile # Figure out a way to make volume share still work
+        deploy:
+            mode: replicated
+            replicas: 1
+        restart: unless-stopped
+        depends_on:
+            db:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+        volumes:
+            - osu-beatmaps:/var/www/storage/app/beatmaps
     nginx:
         image: nginx:alpine
         restart: unless-stopped
@@ -56,3 +76,6 @@ services:
             timeout: 5s
             start_period: 10s
             retries: 3
+
+volumes:
+    osu-beatmaps:

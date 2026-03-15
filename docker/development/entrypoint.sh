@@ -1,12 +1,12 @@
 #!/bin/bash
 
-UID=$(stat -c "%u" /var/www)
-GID=$(stat -c "%g" /var/www)
+HOST_UID=$(stat -c "%u" /var/www)
+HOST_GID=$(stat -c "%g" /var/www)
 
 if [ "$UID" != "0" ]; then
     echo "Updating permissions"
-    usermod -u $UID www-data
-    groupmod -g $GID www-data
+    usermod -u $HOST_UID www-data
+    groupmod -g $HOST_GID www-data
 fi
 
 chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
