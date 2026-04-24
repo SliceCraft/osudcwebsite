@@ -14,6 +14,14 @@
         <dl
             class="grid max-w-screen-xl grid-cols-2 gap-8 p-4 mx-auto text-gray-900 sm:grid-cols-3 xl:grid-cols-6 dark:text-white sm:p-8">
             <div class="flex flex-col items-center justify-center">
+                @if(!is_null($player->rank))
+                    <dt class="mb-2 text-3xl font-extrabold">#{{number_format($player->rank)}}</dt>
+                @else
+                    <dt class="mb-2 text-3xl font-extrabold">Unknown</dt>
+                @endif
+                <dd class="text-gray-500 dark:text-gray-400">Rank</dd>
+            </div>
+            <div class="flex flex-col items-center justify-center">
                 <dt class="mb-2 text-3xl font-extrabold">{{number_format($player->completed_daily_challenges)}}</dt>
                 <dd class="text-gray-500 dark:text-gray-400">Completed daily challenges</dd>
             </div>
@@ -36,6 +44,14 @@
             <div class="flex flex-col items-center justify-center">
                 <dt class="mb-2 text-3xl font-extrabold">{{number_format($player->average_placement)}}</dt>
                 <dd class="text-gray-500 dark:text-gray-400">Average placement</dd>
+            </div>
+            <div class="flex flex-col items-center justify-center">
+                <dt class="mb-2 text-3xl font-extrabold">{{is_null($player->total_pp) ? 'N/A' : number_format($player->total_pp)}}</dt>
+                <dd class="text-gray-500 dark:text-gray-400">Total pp</dd>
+            </div>
+            <div class="flex flex-col items-center justify-center">
+                <dt class="mb-2 text-3xl font-extrabold">{{is_null($player->weighted_pp) ? 'N/A' : number_format($player->weighted_pp)}}</dt>
+                <dd class="text-gray-500 dark:text-gray-400">Weighted pp</dd>
             </div>
         </dl>
     </div>
@@ -61,6 +77,9 @@
                 <th scope="col" class="px-6 py-3">
                     Final placement
                 </th>
+                <th scope="col" class="px-6 py-3">
+                    pp
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -81,6 +100,15 @@
                     <td class="px-6 py-4">
                         {{number_format($entry->placement)}}
                     </td>
+                    @if($entry->dailyChallenge->ruleset_id == 0)
+                    <td class="px-6 py-4">
+                        {{number_format($entry->pp)}}
+                    </td>
+                    @else
+                    <td class="px-6 py-4" title="This pp value is not used for total and weighted pp calculation since this daily challenge was a non standard game mode">
+                        {{number_format($entry->pp)}}*
+                    </td>
+                    @endif
                 </tr>
             @endforeach
             </tbody>
