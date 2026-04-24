@@ -19,7 +19,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt install -y nodejs \
-    && npm install -g npm
+    && npm install -g npm@11.11.0
 
 COPY . /var/www
 WORKDIR /var/www
