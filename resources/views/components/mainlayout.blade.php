@@ -94,6 +94,8 @@
         @php
             $now = \Carbon\Carbon::now()->utcOffset(0);
             $mightBeRecalculating = $now->hour == 0 && $now->minute >= 0 && $now->minute <= 30;
+
+            $ppQueueSize = Queue::size('pp');
         @endphp
 {{--        @if(true)--}}
         @if($mightBeRecalculating)
@@ -107,6 +109,18 @@
                 on this site can be inaccurate due to data fetching and recalculations happening in the background.</p>
             </div>
         </div>
+        @endif
+
+        @if($ppQueueSize > 0)
+            <div id="marketing-banner"
+                 class="relative fixed z-50 flex flex-col md:flex-row justify-between w-[calc(100%-2rem)] p-4 -translate-x-1/2 bg-white border border-gray-100 rounded-lg shadow-xs lg:max-w-7xl left-1/2 top-[88px] dark:bg-gray-700 dark:border-gray-600">
+                <div class="flex flex-col items-start mb-3 me-4 md:items-center md:flex-row md:mb-0">
+                    <a class="flex items-center mb-2 border-gray-200 md:pe-4 md:me-4 md:border-e md:mb-0 dark:border-gray-600">
+                        <span class="self-center text-lg font-semibold whitespace-nowrap dark:text-white">PP Calculation</span>
+                    </a>
+                    <p class="flex items-center text-sm font-normal text-gray-500 dark:text-gray-400">We are currently calculating PP scores, currently there are approximately {{$ppQueueSize * 50}} scores left</p>
+                </div>
+            </div>
         @endif
 
         {{$slot}}
