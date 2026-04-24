@@ -125,5 +125,8 @@ return [
     'osu_api' => [
         'client_id' => env('OSU_API_CLIENT_ID', ''),
         'client_secret' => env('OSU_API_CLIENT_SECRET', ''),
+    ],
+    'osu_pp' => [
+        'version' => env('CURRENT_PP_VERSION'),
     ]
 ];
