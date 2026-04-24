@@ -27,6 +27,9 @@ class LeaderboardController extends Controller
             case 'score':
                 $data["leaderboard"] = Player::orderBy('total_score', 'DESC')->paginate(50);
                 break;
+            case 'weightedpp':
+                $data["leaderboard"] = Player::orderBy('weighted_pp', 'DESC')->paginate(50);
+                break;
             default:
                 abort(404);
         }

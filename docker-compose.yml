@@ -2,12 +2,14 @@ services:
     app:
         build:
             context: ./
-            dockerfile: Dockerfile
-        container_name: osudc-php
+            dockerfile: Deployment.Dockerfile
         restart: unless-stopped
+        working_dir: /var/www/
+        env_file:
+            - .env
         volumes:
             - /var/www
-    queue-worker:
+    queue-worker-default:
         build:
             context: ./
             dockerfile: Dockerfile
@@ -16,13 +18,40 @@ services:
             replicas: 3
         entrypoint: php artisan queue:work
         restart: unless-stopped
+    queue-worker-pp:
+        build:
+            context: ./
+            dockerfile: PP.Dockerfile # Figure out a way to make volume share still work
+        deploy:
+            mode: replicated
+            replicas: 3
+        restart: unless-stopped
+        depends_on:
+            db:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+        volumes:
+            - osu-beatmaps:/var/www/storage/app/private/beatmaps
     nginx:
         image: nginx:alpine
         container_name: osudc-nginx
         restart: unless-stopped
         ports:
-            - "9000:80"
+            - "${NGINX_PORT_EXPOSE}:80"
         volumes:
             - ./docker/nginx:/etc/nginx/conf.d/
         volumes_from:
             - app
+    redis:
+        image: redis:alpine
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 5s
+            timeout: 5s
+            start_period: 10s
+            retries: 3
+
+volumes:
+    osu-beatmaps:

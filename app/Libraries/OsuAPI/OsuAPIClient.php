@@ -79,4 +79,26 @@ class OsuAPIClient
 
         return $response;
     }
+
+    public function getRoomPlaylist(int $roomId, int $playlistId, string|null $cursorString = null)
+    {
+        $this->ensureCredentials();
+        $this->ensureCooldown();
+
+        $data = [];
+
+        if (!is_null($cursorString)) {
+            $data['cursor_string'] = $cursorString;
+        }
+
+        $response = Http::accept('application/json')
+            ->contentType('application/json')
+            ->withHeader('Authorization', 'Bearer '.$this->accessToken)
+            ->get("https://osu.ppy.sh/api/v2/rooms/$roomId/playlist/$playlistId/scores", $data)
+            ->json();
+
+        $this->lastRequestTimestamp = microtime(true);
+
+        return $response;
+    }
 }

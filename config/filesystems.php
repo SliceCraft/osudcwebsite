@@ -37,6 +37,13 @@ return [
             'throw' => false,
         ],
 
+        'beatmaps' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/beatmaps'),
+            'serve' => false,
+            'throw' => true,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

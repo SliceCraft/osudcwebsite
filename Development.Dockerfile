@@ -1,6 +1,7 @@
 FROM php:8.4-fpm
 
 RUN apt update && apt install -y \
+    $PHPIZE_DEPS \
     git \
     curl \
     libpng-dev \
@@ -12,21 +13,18 @@ RUN apt update && apt install -y \
 
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
+RUN pecl install redis && docker-php-ext-enable redis
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt install -y nodejs \
-    && npm install -g npm
+    && npm install -g npm@11.11.0
 
-COPY . /var/www
+COPY docker/development/entrypoint.sh /usr/local/bin/entrypoint.sh
+
 WORKDIR /var/www
 
-RUN chown -R www-data:www-data /var/www \
-    && chmod -R 775 /var/www/storage
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-COPY --from=composer:2.6.5 /usr/bin/composer /usr/local/bin/composer
-
-COPY composer.json ./
-RUN composer install
-RUN npm install
-RUN npm run build
+CMD ["php-fpm"]

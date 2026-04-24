@@ -7,6 +7,8 @@ use App\Models\DailyChallenge;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class GetDailyChallengeRoomData extends Command
 {
@@ -64,7 +66,16 @@ class GetDailyChallengeRoomData extends Command
             $dailyChallengeRow->room_id = $dailyChallengeRoomRoom['id'];
             $dailyChallengeRow->starts_at = Carbon::parse($dailyChallengeRoomRoom['starts_at']);
             $dailyChallengeRow->ends_at = Carbon::parse($dailyChallengeRoomRoom['ends_at']);
+            $dailyChallengeRow->ruleset_id = $dailyChallengeRoomRoom['current_playlist_item']['ruleset_id'];
+            $dailyChallengeRow->beatmap_id = $dailyChallengeRoomRoom['current_playlist_item']['beatmap_id'];
             $dailyChallengeRow->save();
+
+            $filepath = "$dailyChallengeRow->beatmap_id.osu";
+            if (!Storage::disk('beatmaps')->exists($filepath)) {
+                $this->info("Downloading beatmap $dailyChallengeRow->beatmap_id");
+                $response = Http::get("https://osu.ppy.sh/osu/$dailyChallengeRow->beatmap_id");
+                Storage::disk('beatmaps')->put($filepath, $response->body());
+            }
         }
 
         $this->info('Daily challenge room data successfully added');

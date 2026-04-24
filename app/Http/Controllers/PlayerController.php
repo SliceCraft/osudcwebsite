@@ -6,6 +6,7 @@ use App\Jobs\RecalculatePlayerData;
 use App\Models\Player;
 use App\Models\Score;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -35,7 +36,20 @@ class PlayerController extends Controller
 
         $data = [];
         $data['player'] = $player;
-        $data['dailychallenges'] = Score::query()->where('user_id', '=', $player->user_id)->orderBy('daily_challenge', 'ASC')->get();
+        if ($request->has('ppsort')) {
+            $data['dailychallenges'] = Score::query()
+                ->where('user_id', '=', $player->user_id)
+                ->orderByDesc('pp')
+                ->with('dailyChallenge')
+                ->get();
+        } else {
+            $data['dailychallenges'] = Score::query()
+                ->where('user_id', '=', $player->user_id)
+                ->orderBy('daily_challenge', 'ASC')
+                ->with('dailyChallenge')
+                ->get();
+        }
+
         return view('playerinfo', $data);
     }
 
