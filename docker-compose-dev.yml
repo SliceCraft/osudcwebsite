@@ -7,6 +7,7 @@ services:
         working_dir: /var/www
         volumes:
             - ./:/var/www
+            - osu-beatmaps:/var/www/storage/app/private/beatmaps
         ports:
             - "5173:5173"
         depends_on:
@@ -34,7 +35,7 @@ services:
             dockerfile: PP.Dockerfile # Figure out a way to make volume share still work
         deploy:
             mode: replicated
-            replicas: 1
+            replicas: 3
         restart: unless-stopped
         depends_on:
             db:
@@ -42,7 +43,7 @@ services:
             redis:
                 condition: service_healthy
         volumes:
-            - osu-beatmaps:/var/www/storage/app/beatmaps
+            - osu-beatmaps:/var/www/storage/app/private/beatmaps
     nginx:
         image: nginx:alpine
         restart: unless-stopped
