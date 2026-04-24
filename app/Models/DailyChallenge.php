@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property $room_id
  * @property $starts_at
  * @property $ends_at
+ * @property $ruleset_id
+ * @property $beatmap_id
  */
 class DailyChallenge extends Model
 {
