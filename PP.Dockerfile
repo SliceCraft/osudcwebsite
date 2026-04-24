@@ -37,12 +37,14 @@ COPY --from=build-osu-tools /app/publish .
 COPY . /var/www
 WORKDIR /var/www
 
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
-    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
-
 COPY --from=composer:2.6.5 /usr/bin/composer /usr/local/bin/composer
 
 COPY composer.json ./
 RUN composer install
 
-CMD ["php", "artisan", "queue:work", "-v", "--queue=pp"]
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
+    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+USER www-data
+
+CMD ["php", "artisan", "queue:listen", "-vvv", "--queue=pp"]
