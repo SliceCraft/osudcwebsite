@@ -95,7 +95,7 @@ class CalculatePPJob implements ShouldQueue
                 'score' => $score->score,
                 'accuracy' => $score->accuracy,
                 'placement' => $score->placement,
-                'pp' => is_nan($pp) ? null : $pp,
+                'pp' => $pp == 'NaN' ? null : $pp,
                 'pp_version' => config('app.osu_pp.version'),
             ];
         }
