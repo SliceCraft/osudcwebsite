@@ -87,6 +87,7 @@ class CalculatePPJob implements ShouldQueue
             $result = Process::run("dotnet /opt/osu-tools/PerformanceCalculator.dll simulate $mode storage/app/private/beatmaps/{$this->beatmapId}.osu " . implode(' ', $switches));
 
             $performanceData = json_decode($result->output());
+            $pp = $performanceData->performance_attributes->pp;
             $values[] = [
                 'score_id' => $score->score_id,
                 'user_id' => $score->user_id,
@@ -94,7 +95,7 @@ class CalculatePPJob implements ShouldQueue
                 'score' => $score->score,
                 'accuracy' => $score->accuracy,
                 'placement' => $score->placement,
-                'pp' => $performanceData->performance_attributes->pp,
+                'pp' => is_nan($pp) ? null : $pp,
                 'pp_version' => config('app.osu_pp.version'),
             ];
         }

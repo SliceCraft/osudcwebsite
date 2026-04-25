@@ -74,7 +74,11 @@ class RecalculatePlayerData implements ShouldQueue
 
     function calculateWeightedPP(Collection $scores) : float
     {
-        $scoresAsArray = $scores->sortByDesc(['pp'])->values()->toArray();
+        $scoresAsArray = $scores
+            ->sortByDesc(['pp'])
+            ->values()
+            ->filter(fn ($value) => !is_null($value))
+            ->toArray();
         $total = 0;
 
         foreach ($scoresAsArray as $rank => $score) {
