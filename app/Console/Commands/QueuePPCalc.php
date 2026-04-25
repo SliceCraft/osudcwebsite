@@ -43,7 +43,7 @@ class QueuePPCalc extends Command
                 $dailyChallenge = DailyChallenge::query()->where('id', '=', $dailyChallengeId)->first();
                 $dailyChallengeScores = $scores->where('daily_challenge', '=', $dailyChallenge->id);
 
-                $this->info("Queuing {$scores->count()} scores for daily challenge $dailyChallengeId for pp calculation");
+                $this->info("Queuing {$dailyChallengeScores->count()} scores for daily challenge $dailyChallengeId for pp calculation");
 
                 $unserialisedScores = [];
 
