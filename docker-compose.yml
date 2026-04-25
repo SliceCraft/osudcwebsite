@@ -27,8 +27,6 @@ services:
             replicas: 3
         restart: unless-stopped
         depends_on:
-            db:
-                condition: service_healthy
             redis:
                 condition: service_healthy
         volumes:
