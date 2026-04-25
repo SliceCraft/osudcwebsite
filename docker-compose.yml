@@ -9,6 +9,7 @@ services:
             - .env
         volumes:
             - /var/www
+            - osu-beatmaps:/var/www/storage/app/private/beatmaps
     queue-worker-default:
         build:
             context: ./
