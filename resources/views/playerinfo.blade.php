@@ -100,7 +100,11 @@
                     <td class="px-6 py-4">
                         {{number_format($entry->placement)}}
                     </td>
-                    @if($entry->dailyChallenge->ruleset_id == 0)
+                    @if ($entry->pp == -1)
+                    <td class="px-6 py-4" title="The amount of pp this score is worth hasn't been calculated yet">
+                        N/A
+                    </td>
+                    @elseif ($entry->dailyChallenge->ruleset_id == 0)
                     <td class="px-6 py-4">
                         {{number_format($entry->pp)}}
                     </td>
