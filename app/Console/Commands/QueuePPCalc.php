@@ -36,7 +36,7 @@ class QueuePPCalc extends Command
             ->orWhere('pp_version', '<', config('app.osu_pp.version'))
             ->orWhereNull('pp_version')
             ->limit(100000)
-            ->chunk(50, function ($scores) {
+            ->chunkById(50, function ($scores) {
             $dailyChallenges = $scores->pluck('daily_challenge')->unique();
 
             foreach ($dailyChallenges as $dailyChallengeId) {
