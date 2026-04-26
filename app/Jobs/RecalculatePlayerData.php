@@ -58,9 +58,9 @@ class RecalculatePlayerData implements ShouldQueue
             $player->total_score = $totalScore;
             $player->total_attempts = $totalAttempts;
             $player->current_streak = $currentStreak;
-            $player->average_accuracy = $totalAcc / $dailyChallenges;
+            $player->average_accuracy = $dailyChallenges == 0 ? 0 : $totalAcc / $dailyChallenges;
             // TODO: The totalplacement should use the bottom placement when a player didn't play in a particular daily challenge
-            $player->average_placement = $totalPlacement / count($playerScores);
+            $player->average_placement = $player->completed_daily_challenges == 0 ? 0 : $totalPlacement / $player->completed_daily_challenges;
 
             $playerScoresOnMainRuleset = $playerScores->filter(function ($row) {
                 return $row->dailyChallenge->ruleset_id == 0;
