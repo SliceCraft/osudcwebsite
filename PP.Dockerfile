@@ -1,5 +1,5 @@
 # Build osu-tools
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-osu-tools
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build-osu-tools
 WORKDIR /src
 RUN git clone --depth 1 https://github.com/ppy/osu-tools.git .
 WORKDIR /src/PerformanceCalculator
@@ -28,7 +28,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 RUN curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh \
     && chmod +x dotnet-install.sh \
-    && ./dotnet-install.sh --channel 8.0 --runtime dotnet --install-dir /usr/local/bin \
+    && ./dotnet-install.sh --channel 10.0 --runtime dotnet --install-dir /usr/local/bin \
     && rm dotnet-install.sh
 
 WORKDIR /opt/osu-tools
