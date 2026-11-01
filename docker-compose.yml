@@ -4,6 +4,8 @@ services:
             context: ./
             dockerfile: Deployment.Dockerfile
         restart: unless-stopped
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         working_dir: /var/www/
         env_file:
             - .env
@@ -19,6 +21,8 @@ services:
             replicas: 3
         entrypoint: php artisan queue:work
         restart: unless-stopped
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
     queue-worker-pp:
         build:
             context: ./
@@ -27,6 +31,8 @@ services:
             mode: replicated
             replicas: 3
         restart: unless-stopped
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         depends_on:
             redis:
                 condition: service_healthy
